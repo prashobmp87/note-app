@@ -1,0 +1,13 @@
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/exception/NoteAppException.java
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/NoteappApplication.java
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/service/NoteServiceImpl.java
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/controller/NoteController.java
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/utils/NoteTag.java
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/utils/NoteAppConstants.java
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/entity/Note.java
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/service/NoteService.java
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/dto/ApiResponse.java
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/repo/NoteRepo.java
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/dto/NoteDTO.java
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/exception/NoteAppControllerAdvice.java
+/Users/prashob/2024/sts_workspace/noteapp/src/main/java/com/pmp/noteapp/utils/NoteMapper.java
