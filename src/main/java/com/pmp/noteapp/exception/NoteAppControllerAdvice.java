@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.pmp.noteapp.dto.ApiResponse;
 import com.pmp.noteapp.utils.NoteAppConstants;
@@ -39,6 +40,21 @@ class NoteAppControllerAdvice {
 	
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<?>  handleInvalidArguementException(HttpMessageNotReadableException e){
+		String errorMsg = e.getMessage();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.response(HttpStatus.BAD_REQUEST.value(), errorMsg));
+
+	}
+	
+	
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<?>  handleInvalidArguementTypeException(MethodArgumentTypeMismatchException e){
+		String errorMsg = e.getMessage();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.response(HttpStatus.BAD_REQUEST.value(), errorMsg));
+
+	}
+	
+	@ExceptionHandler(NoteAppException.class)
+	public ResponseEntity<?>  handleInvalidArguementTypeException(NoteAppException e){
 		String errorMsg = e.getMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.response(HttpStatus.BAD_REQUEST.value(), errorMsg));
 

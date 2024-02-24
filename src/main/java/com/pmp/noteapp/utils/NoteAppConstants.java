@@ -6,7 +6,7 @@ public class NoteAppConstants {
 	public static final int RESPONSE_CODE_SUCCESS=200;
 	public static final String RESPONSE_MSG_SUCCESS="SUCCESS";
 	
-	public static final int RESPONSE_CODE_MISSING_PARAM=422;
+	public static final int RESPONSE_CODE_MISSING_PARAM=400;
 	public static final String RESPONSE_MSG_MISSING_PARAM="Mandatory Params missing";
 	
 	

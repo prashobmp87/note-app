@@ -16,15 +16,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pmp.noteapp.dto.ApiResponse;
 import com.pmp.noteapp.dto.NoteDTO;
 import com.pmp.noteapp.entity.Note;
+import com.pmp.noteapp.exception.NoteAppException;
 import com.pmp.noteapp.service.NoteService;
+import com.pmp.noteapp.utils.NoteAppConstants;
 import com.pmp.noteapp.utils.NoteMapper;
 import com.pmp.noteapp.utils.NoteTag;
+import com.pmp.noteapp.utils.Utils;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -45,11 +47,27 @@ public class NoteController {
 	@PostMapping("/save")
 	public ResponseEntity<?> saveNote(@RequestBody @Valid NoteDTO noteDTO){
 		Note note=noteMapper.mapToEntity(noteDTO);
-		noteAppService.saveNote(note);
+		noteAppService.createNote(note);
         return ResponseEntity.ok(ApiResponse.success());
 
 	}
 	
+	
+	@PutMapping("/update/{id}")
+	public ResponseEntity<?> updateNote(@PathVariable String id, @RequestBody NoteDTO noteDTO){
+		log.info("Inside NoteappController.updateNote id"+id);
+		noteDTO.setId(id);
+		Note note=noteMapper.mapToEntity(noteDTO);
+		noteAppService.updateNote(note);
+		return ResponseEntity.ok(ApiResponse.success());
+	}
+	
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<?>  deleteNote(@PathVariable String id) {
+		log.info("Inside NoteappController.deleteNote"+id);
+		noteAppService.deleteNote(id);
+        return ResponseEntity.ok(ApiResponse.success());
+	}
 	
 	@GetMapping("/all")
 	public ResponseEntity<?> getAllNotes(){
@@ -74,11 +92,20 @@ public class NoteController {
 	}
 	
 	
+	@GetMapping("/{id}/stat")
+	public ResponseEntity<?>  getNoteStatistics(@PathVariable String id) {
+		log.info("Inside NoteappController.getNoteStatistics"+id);
+		Map<String,Integer> statisticsMap = noteAppService.getNoteStatistics(id);
+		return new ResponseEntity<>(ApiResponse.success(statisticsMap),HttpStatus.OK);
+	}
+	
+	
 	@GetMapping("/list")
-	public ResponseEntity<?> listNotes(@RequestParam(required=false ,name="tags") List<NoteTag> tags,
+	public ResponseEntity<?> listUserNotes(@RequestParam(required=false ,name="tags") List<NoteTag> tags,
 										@RequestParam(required = true) int page){
-		log.info("Inside NoteappController.listNotes");
-		List<Note> notes=noteAppService.listNotesByTags(tags, page);
+		log.info("Inside NoteappController.listUserNotes"+page);
+		String userName= getUserDetailsFromSecurity();
+		List<Note> notes=noteAppService.listUserNotesByTags(userName,tags, page);
 		if (notes != null && !notes.isEmpty()) {
             List<NoteDTO> notesDTO = notes.stream()
                                           .map(note->noteMapper.mapToDto(note))
@@ -88,42 +115,18 @@ public class NoteController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.noDataFound());
 	}
 	
-	@PutMapping("/update/{id}")
-	public ResponseEntity<?> updateNote(@PathVariable String id, @RequestBody NoteDTO noteDTO){
-		log.info("Inside NoteappController.updateNote id"+id);
-		Optional<Note> existingNote = noteAppService.getNoteById(id);
-		
-		if (existingNote.isPresent()) {
-			    Note noteToUpdate=existingNote.get();
-			    if(noteDTO.getText()!=null && !noteDTO.getText().isEmpty()) {
-			    	noteToUpdate.setText(noteDTO.getText());
-			    }
-			    if(noteDTO.getTitle()!=null && !noteDTO.getTitle().isEmpty()) {
-			    	noteToUpdate.setTitle(noteDTO.getTitle());
-			    }
-			    noteToUpdate.setTags(noteDTO.getTags());
-			    noteAppService.saveNote(noteToUpdate);
-			    return ResponseEntity.ok(ApiResponse.success());
-	    } 
-	   
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.noDataFound());
-	}
-	
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<?>  deleteNote(@PathVariable String id) {
-		log.info("Inside NoteappController.deleteNote"+id);
-		noteAppService.deleteNote(id);
-        return ResponseEntity.ok(ApiResponse.success());
-	}
-	
-	@GetMapping("/{id}/stat")
-	public ResponseEntity<?>  getNoteStatistics(@PathVariable String id) {
-		log.info("Inside NoteappController.getNoteStatistics"+id);
-		Map<String,Integer> statisticsMap = noteAppService.getNoteStatistics(id);
-		return new ResponseEntity<>(ApiResponse.success(statisticsMap),HttpStatus.OK);
+	@PutMapping("/updateUserNoteByTitle/{title}")
+	public ResponseEntity<?> updateUserNoteByTitle(@PathVariable String title, @RequestBody NoteDTO noteDTO){
+		log.info("Inside NoteappController.updateUserNoteByTitle id"+title);
+		noteDTO.setTitle(title);
+		Note note=noteMapper.mapToEntity(noteDTO);
+		noteAppService.updateNote(note);
+		return ResponseEntity.ok(ApiResponse.success());
 	}
 	
 	
-	
+	private String getUserDetailsFromSecurity() {
+		return NoteAppConstants.DEMO_USER; 
+	}
 	
 }

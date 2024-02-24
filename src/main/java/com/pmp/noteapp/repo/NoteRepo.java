@@ -20,7 +20,10 @@ public interface NoteRepo extends MongoRepository<Note, String> {
 	
 	Optional<Note> findNoteById(String id);
 	
+    List<Note> findNoteByIdOrUserNameAndTitle(String id,String userName,String title);
+
 	
+
 	@Query(value = "{ 'tags' : {$in: ?0} }", fields = "{ 'id' : 0 ,'title' : 1, 'createdDate' : 1 }")
 	List<Note> findByTagsIncludeTitleAndCreatedDateFields(List<NoteTag> tags);
 
@@ -31,5 +34,20 @@ public interface NoteRepo extends MongoRepository<Note, String> {
 	
 	@Query(value = "{}", fields = "{ 'id' : 1 ,'title' : 1, 'createdDate' : 1}",sort = "{'createdDate': -1}")
     List<Note> findAllWithTitleAndCreatedDateFieldsOrderByCreatedDateDesc(Pageable pageable);
+
+	
+	List<Note> findNoteByUserNameAndTitle(String username,String title);
+	
+	
+	@Query(value = "{ 'userName' : ?0, 'tags' : {$in: ?1} }", fields = "{ 'id' : 1 ,'title' : 1, 'createdDate' : 1 }", sort = "{'createdDate': -1}")
+	List<Note> findByUserNameAndTagsIncludeTitleAndCreatedDateFieldsOrderByCreatedDateDesc(String userName, List<NoteTag> tags,Pageable pageable);
+
+	
+	@Query(value = "{ 'userName' : ?0}", fields = "{ 'id' : 1 ,'title' : 1, 'createdDate' : 1}",sort = "{'createdDate': -1}")
+    List<Note> findByUserNameWithTitleAndCreatedDateFieldsOrderByCreatedDateDesc(String userName, Pageable pageable);
+	
+	
+	
+	
 
 }
